@@ -7,7 +7,7 @@ Features
 - Download the project backup (ZIP) to a local `SAVE_DIR`.
 - Optionally extract the backup and commit it into a different GitHub repository (useful for archive/history tracking).
 
-Quick start
+## Quick start
 
 1. Install requirements:
 
@@ -41,7 +41,21 @@ Notes on the token:
 - Create a fine-grained personal access token with minimal permission: Contents → Read & write for the specific repository.
 - Do not commit `.env` or tokens to source control. Keep tokens in a local `.env` or use a secret manager.
 
-Usage
+## Creating a GitHub personal access token (PAT)
+	- Go to github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
+	- Give the token a descriptive name (e.g. "cvat-auto-backup:backup-to-target-repo").
+	- Set an expiration (e.g. 30 days, 90 days) depending on your security policy.
+	- Under "Repository access" choose "Only select repositories" and add the target repository.
+	- Under Permissions set "Contents" → "Read & write". This is sufficient to push commits.
+	- Generate the token and copy it immediately — GitHub will not show it again.
+
+Security best practices
+ - Use a fine-grained token restricted to the single target repository and with the minimal scope (Contents read/write).
+ - Prefer short expirations and rotate tokens regularly.
+ - Store tokens in a secure place (local `.env` excluded from git, or a secrets manager).
+ - If a token is compromised, revoke it immediately and create a new one.
+
+## Usage
 
 Run the CLI (reads `.env` by default):
 
@@ -56,7 +70,7 @@ python cli.py --host http://... --username USER --password PASS --project-id 1 -
 	--target-repo https://github.com/owner/target-repo.git --target-branch main --git-username USER --git-token YOUR_TOKEN
 ```
 
-Behavior
+## Behavior
 - If `TARGET_REPO`, `GIT_USERNAME` and `GIT_TOKEN` are provided the script will:
 	- create the CVAT backup ZIP,
 	- extract it to a temporary directory,
@@ -65,11 +79,9 @@ Behavior
 - Commit messages are generated automatically in the format:
 	`chore(backup): add cvat project <id> backup <zip_filename> @ <UTC timestamp>`
 
-Troubleshooting
+## Troubleshooting
 - If the target branch doesn't exist, the script will clone the repo and create the branch locally before committing.
 - If there are no changes to commit, the script will skip committing/pushing.
 
-License
-
+## License
 MIT
-
